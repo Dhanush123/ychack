@@ -2,26 +2,30 @@ import React, { Component } from 'react';
 import './App.css';
 import Records from './Records';
 import store from "./reducers/reduxStore";
-import firebase from "./firebase.js";
+import db from "./firebase.js";
 
 // import {dispatch} from "react-redux";
 import {ADD_PATIENT} from "./actions/actionTypes";
 class App extends Component {
-  componentDidMount() {
-    
-    //.then(() => {
+  constructor(props) {
+    super(props);
+    this.users = {}; // <- set up react state
+  }
+
+  componentWillMount() {
     console.log("called fetch func");
-    firebase.database().ref('users').on("value", data => {
-      console.log("calling users",data);
+    db.collection('users').get().then(data => {
+      data.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+      });
+      /*console.log("calling users",data);
       if (data.val()) {
         console.log("firebase",data.val());
+        this.setState({users: data.val()});
+
         // dispatch({ type: ADD_PATIENT, payload: data.val() });
-      }
+      }*/
     });
-    //}).catch((err) => {
-    //  console.log("lolwatchthis")
-    //});;
-    // this.setState({"database":firebase.database()});
   }
   render() {
     return (
